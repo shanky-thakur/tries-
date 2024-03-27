@@ -1,0 +1,68 @@
+import java.util.HashMap;
+
+public class tries {
+
+    static class Node {
+        char data;
+        boolean isTerminal;
+        HashMap<Character, Node> map;
+
+        public Node(char data, boolean isTerminal, HashMap<Character, Node> map) {
+            this.data = data;
+            this.isTerminal = isTerminal;
+            this.map = map;
+        }
+    }
+
+    public Node root = new Node('.', false, new HashMap<>());
+
+    public void insert(String word) {
+        Node current = root;
+        int n = word.length();
+        for(int i = 0; i < n; i++) {
+            if (!current.map.containsKey(word.charAt(i))) {
+                current.map.put(word.charAt(i), new Node(word.charAt(i), false, new HashMap<>()));
+            }
+            current = current.map.get(word.charAt(i));
+            if(i == n - 1) {
+                current.isTerminal = true;
+            }
+        }
+    }
+
+    public boolean isPresent(String word) {
+        Node current = root;
+        int n = word.length();
+        for(int i = 0; i < n; i++) {
+            if(current.map.containsKey(word.charAt(i))) {
+                current = current.map.get(word.charAt(i));
+            } else {
+                return false;
+            }
+        }
+        return current.isTerminal;
+    }
+
+    public boolean startsWith(String pattern) {
+        Node current = root;
+        int n = pattern.length();
+        for(int i = 0; i < n; i++) {
+            if(current.map.containsKey(pattern.charAt(i))) {
+                current = current.map.get(pattern.charAt(i));
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        tries t = new tries();
+        t.insert("apple");
+        System.out.println(t.isPresent("apple"));
+        System.out.println(t.isPresent("app"));
+        System.out.println(t.startsWith("app"));
+        t.insert("app");
+        System.out.println(t.isPresent("app"));
+    }
+}
